@@ -45,7 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # Own applications
-    'movements.apps.MovementsConfig',
+    'movements',
 ]
 
 MIDDLEWARE = [

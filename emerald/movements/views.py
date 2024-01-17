@@ -13,7 +13,7 @@ class UserViewSet(viewsets.ReadOnlyModelViewSet):
 
 
 class AccountTypeViewSet(viewsets.ModelViewSet):
-    queryset = pm.AccountType.objects.all().order_by('account_type_name')
+    queryset = pm.AccountType.objects.all().order_by('name')
     serializer_class = ps.AccountTypeSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 

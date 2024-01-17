@@ -1,84 +1,85 @@
 from django.contrib import admin
-from .models import (AccountType, CardType, TransactionType, ProjectType, Category, Subcategory, Entity, Customer,
-                     Account, Project, Card, Transaction)
+from . import models as pm
 
 
-@admin.register(AccountType)
+@admin.register(pm.AccountType)
 class AccountTypeAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(CardType)
+@admin.register(pm.CardType)
 class CardTypeAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(TransactionType)
+@admin.register(pm.TransactionType)
 class TransactionTypeAdmin(admin.ModelAdmin):
     pass
 
 
-@admin.register(ProjectType)
+@admin.register(pm.ProjectType)
 class ProjectTypeAdmin(admin.ModelAdmin):
-    pass
+    model = pm.ProjectType
+
+    fields = ('name', 'owner')
 
 
 class SubcategoriesInline(admin.TabularInline):
-    model = Subcategory
+    model = pm.Subcategory
 
-    fields = ('subcategory_logo', 'subcategory_name')
+    fields = ('logo', 'name')
 
 
-@admin.register(Category)
+@admin.register(pm.Category)
 class CategoryAdmin(admin.ModelAdmin):
-    fields = ('category_logo', 'category_name')
+    fields = ('logo', 'name', 'owner')
 
     inlines = [SubcategoriesInline]
 
 
-@admin.register(Subcategory)
+@admin.register(pm.Subcategory)
 class SubcategoryAdmin(admin.ModelAdmin):
-    list_display = ('subcategory_name', 'category')
+    list_display = ('name', 'category')
 
-    fields = ('subcategory_logo', ('subcategory_name', 'category'))
+    fields = ('logo', ('name', 'category'), 'owner')
 
 
-@admin.register(Entity)
+@admin.register(pm.Entity)
 class EntityAdmin(admin.ModelAdmin):
-    fields = ('entity_logo', 'entity_name')
+    fields = ('logo', 'name')
 
 
-@admin.register(Customer)
+@admin.register(pm.Customer)
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'phone')
 
-    fields = ('photo', ('first_name', 'last_name'), 'phone')
+    fields = ('photo', ('first_name', 'last_name'), 'phone', 'owner')
 
 
-@admin.register(Account)
+@admin.register(pm.Account)
 class AccountAdmin(admin.ModelAdmin):
-    list_display = ('iban', 'account_alias', 'entity', 'balance', 'display_customers')
+    list_display = ('iban', 'alias', 'entity', 'balance', 'display_customers')
     list_filter = ('entity', 'customers')
 
-    fields = ('entity', ('account_alias', 'customers'), ('iban', 'balance', 'currency'), 'account_type')
+    fields = ('entity', ('alias', 'customers'), ('iban', 'balance', 'currency'), 'account_type', 'owner')
 
 
-@admin.register(Project)
+@admin.register(pm.Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('project_name', 'project_type')
+    list_display = ('name', 'project_type')
 
-    fields = (('project_name', 'project_type'), 'project_description')
+    fields = (('name', 'project_type'), 'description')
 
 
-@admin.register(Card)
+@admin.register(pm.Card)
 class CardAdmin(admin.ModelAdmin):
-    list_display = ('card_alias', 'card_number', 'expiration_date', 'customer')
+    list_display = ('alias', 'number', 'expiration_date', 'customer')
     list_filter = ('card_type', 'customer')
 
-    fields = ('card_type', ('card_alias', 'customer', 'account'), ('card_number', 'expiration_date'))
+    fields = ('card_type', ('alias', 'customer', 'account'), ('number', 'expiration_date'), 'owner')
 
 
-@admin.register(Transaction)
+@admin.register(pm.Transaction)
 class TransactionAdmin(admin.ModelAdmin):
     list_display = ('concept', 'amount', 'card', 'account', 'referenced_transaction')
     list_filter = ('operation_date', 'card', 'account', 'project')
@@ -97,6 +98,9 @@ class TransactionAdmin(admin.ModelAdmin):
             'fields': (('transaction_type', 'subcategory', 'project'), )
         }),
         ('Additional Comments', {
-            'fields': ('transaction_comment',)
+            'fields': ('comment',)
         }),
+        (None, {
+            'fields': ('owner',)
+        })
     )
