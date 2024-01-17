@@ -52,7 +52,6 @@ class ProjectType(models.Model):
     name = models.CharField(max_length=20,
                             unique=False,
                             help_text="Enter the type of project (trip, vacation, etc.)")
-    owner = models.ForeignKey('auth.User', related_name='project_type_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -70,7 +69,6 @@ class Category(models.Model):
                             help_text="Enter a category (restaurant, transport, etc.)")
     logo = models.ImageField(help_text="Upload category logo",
                              unique=False, null=True, blank=True)
-    owner = models.ForeignKey('auth.User', related_name='category_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -90,7 +88,6 @@ class Subcategory(models.Model):
     logo = models.ImageField(help_text="Upload subcategory logo",
                              unique=False, null=True, blank=True)
     category = models.ForeignKey("Category", on_delete=models.CASCADE, null=False)
-    owner = models.ForeignKey('auth.User', related_name='subcategory_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -133,7 +130,6 @@ class Customer(models.Model):
                              unique=True,
                              help_text="Enter your phone number")
     photo = models.ImageField(help_text="Enter your photo", null=True, blank=True)
-    owner = models.ForeignKey('auth.User', related_name='customer_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -163,7 +159,6 @@ class Account(models.Model):
     account_type = models.ForeignKey("AccountType", on_delete=models.RESTRICT, null=False)
     entity = models.ForeignKey("Entity", on_delete=models.RESTRICT, null=False)
     customers = models.ManyToManyField("Customer")
-    owner = models.ForeignKey('auth.User', related_name='account_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -186,7 +181,6 @@ class Project(models.Model):
                             help_text="Enter project name")
     description = models.CharField(max_length=200, help_text="Enter project description", null=True, blank=True)
     project_type = models.ForeignKey("ProjectType", on_delete=models.SET_NULL, null=True, blank=True)
-    owner = models.ForeignKey('auth.User', related_name='project_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -211,7 +205,6 @@ class Card(models.Model):
     card_type = models.ForeignKey("CardType", on_delete=models.RESTRICT, null=False)
     customer = models.ForeignKey("Customer", on_delete=models.CASCADE, null=False)
     account = models.ForeignKey("Account", on_delete=models.CASCADE, null=False)
-    owner = models.ForeignKey('auth.User', related_name='card_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:
@@ -247,7 +240,6 @@ class Transaction(models.Model):
     subcategory = models.ForeignKey("Subcategory", on_delete=models.SET_NULL, null=True, blank=True)
     project = models.ForeignKey("Project", on_delete=models.SET_NULL, null=True, blank=True)
     referenced_transaction = models.ForeignKey("Transaction", on_delete=models.SET_NULL, null=True, blank=True)
-    owner = models.ForeignKey('auth.User', related_name='transaction_owner', on_delete=models.CASCADE)
 
     # Metadata
     class Meta:

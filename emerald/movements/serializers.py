@@ -4,94 +4,112 @@ from . import models as pm
 
 
 class UserSerializer(serializers.ModelSerializer):
-    account_types = serializers.PrimaryKeyRelatedField(many=True, queryset=pm.AccountType.objects.all())
 
     class Meta:
         model = User
-        fields = ('id', 'username', 'account_types')
+        fields = "__all__"  # ('id', 'username', 'account_types')
 
 
 class AccountTypeSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
 
     class Meta:
         model = pm.AccountType
-        fields = ('id', 'name', 'owner')
+        fields = "__all__"  # ('id', 'name')
 
 
 class CardTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.CardType
-        fields = ('id', 'name')
+        fields = "__all__"  # ('id', 'name')
 
 
 class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.TransactionType
-        fields = ('id', 'name')
+        fields = "__all__"  # ('id', 'name')
 
 
 class ProjectTypeSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = pm.ProjectType
-        fields = ('id', 'name')
+        fields = "__all__"  # ('id', 'name')
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = pm.Category
-        fields = ('id', 'name', 'logo')
+        fields = "__all__"  # ('id', 'name', 'logo')
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    category = CategorySerializer(read_only=True)
 
     class Meta:
         model = pm.Subcategory
-        fields = ('id', 'name', 'category', 'logo')
+        fields = "__all__"  # ('id', 'name', 'category', 'logo')
 
 
 class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.Entity
-        fields = ('id', 'name', 'logo')
+        fields = "__all__"  # ('id', 'name', 'logo')
 
 
 class CustomerSerializer(serializers.HyperlinkedModelSerializer):
+    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = pm.Customer
-        fields = ('id', 'first_name', 'last_name', 'phone', 'photo')
+        fields = "__all__"  # ('id', 'first_name', 'last_name', 'phone', 'photo')
 
 
 class AccountSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    account = AccountTypeSerializer(read_only=True)
+    entity = EntitySerializer(read_only=True)
+    customer = CustomerSerializer(read_only=True, many=True)
 
     class Meta:
         model = pm.Account
-        fields = ('id', 'iban', 'alias', 'balance', 'currency', 'account_type', 'entity', 'customers')
+        fields = "__all__"  # ('id', 'iban', 'alias', 'balance', 'currency', 'account_type', 'entity', 'customers')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    project_type = ProjectTypeSerializer(read_only=True)
 
     class Meta:
         model = pm.Project
-        fields = ('id', 'name', 'description', 'project_type')
+        fields = "__all__"  # ('id', 'name', 'description', 'project_type')
 
 
 class CardSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    card_type = CardTypeSerializer(read_only=True)
+    customer = CustomerSerializer(read_only=True)
+    account = AccountSerializer(read_only=True)
 
     class Meta:
         model = pm.Card
-        fields = ('id', 'alias', 'number', 'expiration_date', 'card_type', 'customer', 'account')
+        fields = "__all__"  # ('id', 'alias', 'number', 'expiration_date', 'card_type', 'customer', 'account')
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    owner = UserSerializer(read_only=True)
+    transaction_type = TransactionTypeSerializer(read_only=True)
+    card = CardSerializer(read_only=True)
+    account = AccountSerializer(read_only=True)
+    subcategory = SubcategorySerializer(read_only=True)
+    project = ProjectSerializer(read_only=True)
 
     class Meta:
         model = pm.Transaction
-        fields = ('id', 'concept', 'operation_date', 'value_date', 'amount', 'comment', 'transaction_type',
-                  'card', 'account', 'subcategory', 'project', 'referenced_transaction', 'currency')
+        fields = "__all__"  # ('id', 'concept', 'operation_date', 'value_date', 'amount', 'comment', 'transaction_type', 'card', 'account', 'subcategory', 'project', 'referenced_transaction', 'currency')

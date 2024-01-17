@@ -21,7 +21,7 @@ class TransactionTypeAdmin(admin.ModelAdmin):
 class ProjectTypeAdmin(admin.ModelAdmin):
     model = pm.ProjectType
 
-    fields = ('name', 'owner')
+    fields = ('name', )
 
 
 class SubcategoriesInline(admin.TabularInline):
@@ -32,7 +32,7 @@ class SubcategoriesInline(admin.TabularInline):
 
 @admin.register(pm.Category)
 class CategoryAdmin(admin.ModelAdmin):
-    fields = ('logo', 'name', 'owner')
+    fields = ('logo', 'name')
 
     inlines = [SubcategoriesInline]
 
@@ -41,7 +41,7 @@ class CategoryAdmin(admin.ModelAdmin):
 class SubcategoryAdmin(admin.ModelAdmin):
     list_display = ('name', 'category')
 
-    fields = ('logo', ('name', 'category'), 'owner')
+    fields = ('logo', ('name', 'category'))
 
 
 @admin.register(pm.Entity)
@@ -53,7 +53,7 @@ class EntityAdmin(admin.ModelAdmin):
 class CustomerAdmin(admin.ModelAdmin):
     list_display = ('__str__', 'phone')
 
-    fields = ('photo', ('first_name', 'last_name'), 'phone', 'owner')
+    fields = ('photo', ('first_name', 'last_name'), 'phone')
 
 
 @admin.register(pm.Account)
@@ -61,7 +61,7 @@ class AccountAdmin(admin.ModelAdmin):
     list_display = ('iban', 'alias', 'entity', 'balance', 'display_customers')
     list_filter = ('entity', 'customers')
 
-    fields = ('entity', ('alias', 'customers'), ('iban', 'balance', 'currency'), 'account_type', 'owner')
+    fields = ('entity', ('alias', 'customers'), ('iban', 'balance', 'currency'), 'account_type')
 
 
 @admin.register(pm.Project)
@@ -76,7 +76,7 @@ class CardAdmin(admin.ModelAdmin):
     list_display = ('alias', 'number', 'expiration_date', 'customer')
     list_filter = ('card_type', 'customer')
 
-    fields = ('card_type', ('alias', 'customer', 'account'), ('number', 'expiration_date'), 'owner')
+    fields = ('card_type', ('alias', 'customer', 'account'), ('number', 'expiration_date'))
 
 
 @admin.register(pm.Transaction)
@@ -100,7 +100,4 @@ class TransactionAdmin(admin.ModelAdmin):
         ('Additional Comments', {
             'fields': ('comment',)
         }),
-        (None, {
-            'fields': ('owner',)
-        })
     )

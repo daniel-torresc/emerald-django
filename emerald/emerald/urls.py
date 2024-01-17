@@ -19,10 +19,14 @@ from django.urls import path, include
 from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 
 urlpatterns = [
     path(route='admin/', view=admin.site.urls),
+    path(route='api/docs/schema/', view=SpectacularAPIView.as_view(), name='schema'),
+    path(route='api/docs/schema/ui', view=SpectacularSwaggerView.as_view(), name='schema_ui'),
+
     path(route='api-auth/', view=include('rest_framework.urls', namespace='rest_framework')),
     path(route='api/', view=include("movements.urls")),
     # path(route='', view=RedirectView.as_view(url='movements/', permanent=True)),
