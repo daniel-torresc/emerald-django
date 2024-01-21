@@ -7,109 +7,103 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = "__all__"  # ('id', 'username', 'account_types')
+        fields = ('id', 'username', 'last_login')
 
 
 class AccountTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.AccountType
-        fields = "__all__"  # ('id', 'name')
+        exclude = ('id', )
 
 
 class CardTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.CardType
-        fields = "__all__"  # ('id', 'name')
+        exclude = ('id', )
 
 
 class TransactionTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.TransactionType
-        fields = "__all__"  # ('id', 'name')
+        exclude = ('id', )
 
 
 class ProjectTypeSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
 
     class Meta:
         model = pm.ProjectType
-        fields = "__all__"  # ('id', 'name')
+        exclude = ('id', 'owner')
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
+    subcategories = serializers.StringRelatedField(many=True)
 
     class Meta:
         model = pm.Category
-        fields = "__all__"  # ('id', 'name', 'logo')
+        exclude = ('id', 'owner')
 
 
 class SubcategorySerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    category = CategorySerializer(read_only=True)
+    # category = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = pm.Subcategory
-        fields = "__all__"  # ('id', 'name', 'category', 'logo')
+        exclude = ('id', 'owner')
 
 
 class EntitySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = pm.Entity
-        fields = "__all__"  # ('id', 'name', 'logo')
+        exclude = ('id', )
 
 
-class CustomerSerializer(serializers.HyperlinkedModelSerializer):
-    owner = UserSerializer(read_only=True)
+class CustomerSerializer(serializers.HyperlinkedModelSerializer):  # TODO: check if HyperlinkedModelSerializer is better
 
     class Meta:
         model = pm.Customer
-        fields = "__all__"  # ('id', 'first_name', 'last_name', 'phone', 'photo')
+        exclude = ('owner', )
+        # exclude = ('id', 'owner')
 
 
 class AccountSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    account = AccountTypeSerializer(read_only=True)
-    entity = EntitySerializer(read_only=True)
-    customer = CustomerSerializer(read_only=True, many=True)
+    # account_type = serializers.StringRelatedField(read_only=True)
+    # entity = serializers.StringRelatedField(read_only=True)
+    # customers = serializers.StringRelatedField(read_only=True, many=True)
 
     class Meta:
         model = pm.Account
-        fields = "__all__"  # ('id', 'iban', 'alias', 'balance', 'currency', 'account_type', 'entity', 'customers')
+        exclude = ('id', 'owner')
 
 
 class ProjectSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    project_type = ProjectTypeSerializer(read_only=True)
+    # project_type = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = pm.Project
-        fields = "__all__"  # ('id', 'name', 'description', 'project_type')
+        exclude = ('id', 'owner')
 
 
 class CardSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    card_type = CardTypeSerializer(read_only=True)
-    customer = CustomerSerializer(read_only=True)
-    account = AccountSerializer(read_only=True)
+    # card_type = serializers.StringRelatedField(read_only=True)
+    # customer = serializers.StringRelatedField(read_only=True)
+    # account = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = pm.Card
-        fields = "__all__"  # ('id', 'alias', 'number', 'expiration_date', 'card_type', 'customer', 'account')
+        exclude = ('id', 'owner')
 
 
 class TransactionSerializer(serializers.ModelSerializer):
-    owner = UserSerializer(read_only=True)
-    transaction_type = TransactionTypeSerializer(read_only=True)
-    card = CardSerializer(read_only=True)
-    account = AccountSerializer(read_only=True)
-    subcategory = SubcategorySerializer(read_only=True)
-    project = ProjectSerializer(read_only=True)
+    transaction_type = serializers.StringRelatedField(read_only=True)
+    # card = serializers.StringRelatedField(read_only=True)
+    # account = serializers.StringRelatedField(read_only=True)
+    # subcategory = serializers.StringRelatedField(read_only=True)
+    # project = serializers.StringRelatedField(read_only=True)
 
     class Meta:
         model = pm.Transaction
-        fields = "__all__"  # ('id', 'concept', 'operation_date', 'value_date', 'amount', 'comment', 'transaction_type', 'card', 'account', 'subcategory', 'project', 'referenced_transaction', 'currency')
+        exclude = ('owner', )

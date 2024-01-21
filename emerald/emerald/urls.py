@@ -16,18 +16,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from django.views.generic import RedirectView
 from django.conf import settings
 from django.conf.urls.static import static
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
-
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 urlpatterns = [
     path(route='admin/', view=admin.site.urls),
+    path(route='api-auth/', view=include('rest_framework.urls', namespace='rest_framework')),
+
+    path(route='api/token/', view=TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path(route='api/token/refresh/', view=TokenRefreshView.as_view(), name='token_refresh'),
+
     path(route='api/docs/schema/', view=SpectacularAPIView.as_view(), name='schema'),
     path(route='api/docs/schema/ui', view=SpectacularSwaggerView.as_view(), name='schema_ui'),
 
-    path(route='api-auth/', view=include('rest_framework.urls', namespace='rest_framework')),
     path(route='api/', view=include("movements.urls")),
-    # path(route='', view=RedirectView.as_view(url='movements/', permanent=True)),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
