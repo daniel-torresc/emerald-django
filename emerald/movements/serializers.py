@@ -107,3 +107,4 @@ class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = pm.Transaction
         exclude = ('owner', )
+        # read_only_fields = ('concept', 'operation_date', 'value_date', 'amount', 'currency', '')
